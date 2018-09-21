@@ -37,6 +37,14 @@
   name = "github.com/spf13/viper"
   version = "1.2.0"
 
+[[constraint]]
+  name = "github.com/manifoldco/promptui"
+  version = "0.3.1"
+
 [prune]
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  name = "github.com/AlecAivazis/survey"
+  version = "1.6.2"
