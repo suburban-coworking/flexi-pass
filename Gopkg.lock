@@ -10,14 +10,6 @@
   version = "v1.6.2"
 
 [[projects]]
-  branch = "master"
-  digest = "1:454adc7f974228ff789428b6dc098638c57a64aa0718f0bd61e53d3cd39d7a75"
-  name = "github.com/chzyer/readline"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "2972be24d48e78746da79ba8e24e8b488c9880de"
-
-[[projects]]
   digest = "1:870d441fe217b8e689d7949fef6e43efbc787e50f200cb1e70dbca9204a1d6be"
   name = "github.com/inconshreveable/mousetrap"
   packages = ["."]
@@ -27,42 +19,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:e51f40f0c19b39c1825eadd07d5c0a98a2ad5942b166d9fc4f54750ce9a04810"
-  name = "github.com/juju/ansiterm"
-  packages = [
-    ".",
-    "tabwriter",
-  ]
-  pruneopts = "UT"
-  revision = "720a0952cc2ac777afc295d9861263e2a4cf96a1"
-
-[[projects]]
-  branch = "master"
   digest = "1:400e113a367b511b9b09ca642ee11d9885485a93838526d697033af334a2fdde"
   name = "github.com/kballard/go-shellquote"
   packages = ["."]
   pruneopts = "UT"
   revision = "95032a82bc518f77982ea72343cc1ade730072f0"
-
-[[projects]]
-  branch = "master"
-  digest = "1:bb08c7bb1c7224636b1a00639f079ed4391eb822945f26db74b8d8ee3f14d991"
-  name = "github.com/lunixbochs/vtclean"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "2d01aacdc34a083dca635ba869909f5fc0cd4f41"
-
-[[projects]]
-  digest = "1:2d2bc0f23cca6b59cec3fbece9abc102bdb19f548dd58d7667e57699074a2c76"
-  name = "github.com/manifoldco/promptui"
-  packages = [
-    ".",
-    "list",
-    "screenbuf",
-  ]
-  pruneopts = "UT"
-  revision = "157c96fb638a14d268b305cf2012582431fcc410"
-  version = "v0.3.1"
 
 [[projects]]
   digest = "1:c658e84ad3916da105a761660dcaeb01e63416c8ec7bc62256a9b411a05fcd67"
@@ -136,7 +97,6 @@
   analyzer-version = 1
   input-imports = [
     "github.com/AlecAivazis/survey",
-    "github.com/manifoldco/promptui",
     "github.com/mitchellh/go-homedir",
     "github.com/spf13/cobra",
   ]
