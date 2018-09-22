@@ -25,6 +25,18 @@
 #   unused-packages = true
 
 
+[[constraint]]
+  name = "github.com/mitchellh/go-homedir"
+  version = "1.0.0"
+
+[[constraint]]
+  name = "github.com/spf13/cobra"
+  version = "0.0.3"
+
 [prune]
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  name = "github.com/AlecAivazis/survey"
+  version = "1.6.2"

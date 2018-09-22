@@ -8,17 +8,19 @@ GOTEST=$(GOCMD) test
 GOINSTALL=$(GOCMD) install
 DEPENSURE=$(DEPCMD) ensure
 BINARY_NAME=flexi-pass
+BINARY_PATH=$(shell which $(BINARY_NAME))
 
-all: test build
+all: install test
 build: 
 	$(GOBUILD) -o $(BINARY_NAME) -v
 install: build
-	$(GOINSTALL) $(BINARY_NAME)
-test: build
+	$(GOINSTALL) -v
+test:
 	$(GOTEST) -v ./...
-clean: 
+clean:
 	$(GOCLEAN)
-	rm -f $(BINARY_NAME)
+	rm -fv $(BINARY_NAME)
+	rm -fv $(BINARY_PATH)
 run: install
 	$(BINARY_NAME)
 deps:
