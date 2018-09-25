@@ -20,8 +20,12 @@
 
 package main
 
-import "github.com/suburban/flexi-pass/cmd"
+import (
+	log "github.com/sirupsen/logrus"
+	"github.com/suburban/flexi-pass/cmd"
+)
 
 func main() {
+	log.Info("Starting command execution ...")
 	cmd.Execute()
 }

@@ -58,6 +58,14 @@
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:d867dfa6751c8d7a435821ad3b736310c2ed68945d05b50fb9d23aee0540c8cc"
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "3e01752db0189b9157070a0e1668a620f9a85da2"
+  version = "v1.0.6"
+
+[[projects]]
   digest = "1:645cabccbb4fa8aab25a956cbcbdf6a6845ca736b2c64e197ca7cbb9d210b939"
   name = "github.com/spf13/cobra"
   packages = ["."]
@@ -75,9 +83,20 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:5744d700238812de2aa1eb87c16ed4018df60b15d141179557b68c5703eb8283"
+  digest = "1:3f3a05ae0b95893d90b9b3b5afdb79a9b3d96e4e36e099d841ae602e4aca0da8"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  pruneopts = "UT"
+  revision = "0e37d006457bf46f9e6692014ba72ef82c33022c"
+
+[[projects]]
+  branch = "master"
+  digest = "1:3bb4674103eef9bf860b88e59048c67ad646de4274ea7de8d71d16e9f8209bff"
   name = "golang.org/x/sys"
-  packages = ["unix"]
+  packages = [
+    "unix",
+    "windows",
+  ]
   pruneopts = "UT"
   revision = "d641721ec2dead6fe5ca284096fe4b1fcd49e427"
 
@@ -98,6 +117,7 @@
   input-imports = [
     "github.com/AlecAivazis/survey",
     "github.com/mitchellh/go-homedir",
+    "github.com/sirupsen/logrus",
     "github.com/spf13/cobra",
   ]
   solver-name = "gps-cdcl"
