@@ -26,15 +26,18 @@ import (
 	"path"
 
 	homedir "github.com/mitchellh/go-homedir"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
 var dataDir string
+var logLevel string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "flexi-pass",
-	Short: "Manage flexi pass usage in a co-working space.",
+	PersistentPreRun: rootPreRun,
+	Use:              "flexi-pass",
+	Short:            "Manage flexi pass usage in a co-working space.",
 	Long: `Flexi Pass is a simple tool to help co-working administrators manage their users
 that have a flexible subscription.  It is a simple command line tool that you can
 use to add users, set subscription periods and see how much of their subscription
@@ -56,7 +59,8 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	rootCmd.PersistentFlags().StringVarP(&dataDir, "data-dir", "d", dataDir, "application's data directory.")
+	rootCmd.PersistentFlags().StringVarP(&dataDir, "data-dir", "d", dataDir, "data directory.")
+	rootCmd.PersistentFlags().StringVarP(&logLevel, "log-level", "l", logLevel, "log level.")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -69,4 +73,25 @@ func initConfig() {
 	}
 
 	dataDir = path.Join(home, ".suburban", "flexi-pass")
+	logLevel = "info"
+}
+
+func rootPreRun(cmd *cobra.Command, args []string) {
+	log.WithFields(log.Fields{
+		"data-dir":  dataDir,
+		"log-level": logLevel,
+	}).Info("Root Pre Run")
+
+	level, err := log.ParseLevel(logLevel)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.SetLevel(level)
+
+	log.Debug("Debug Message")
+	log.Info("Info Message")
+	log.Warn("Warning Message")
+	log.Error("Error Message")
 }

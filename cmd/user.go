@@ -18,6 +18,7 @@ import (
 	"fmt"
 
 	"github.com/AlecAivazis/survey"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -55,6 +56,8 @@ func runCommand(cmd *cobra.Command, args []string) {
 		Email string
 	}{}
 
+	log.Info("Running user command")
+
 	// perform the questions
 	err := survey.Ask(userQuestions, &answers)
 	if err != nil {
@@ -62,5 +65,8 @@ func runCommand(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	fmt.Printf("%s, %s.", answers.Name, answers.Email)
+	log.WithFields(log.Fields{
+		"name":  answers.Name,
+		"email": answers.Email,
+	}).Info("Creating user.")
 }
