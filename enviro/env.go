@@ -2,33 +2,54 @@ package enviro
 
 import (
 	"database/sql"
+	// blank import 'sqlite3' as we want to rely solely on the 'sql' package's interface
+	_ "github.com/mattn/go-sqlite3"
 
 	log "github.com/sirupsen/logrus"
 )
 
 type env struct {
-	db  *sql.DB
-	log *log.Logger
+	DB  *sql.DB
+	Log *log.Logger
 }
 
-// Init intialises the applications environment.
-// This involves setting up the logger and opening our connection pool to the database.
-func (e *env) Init(url, levelStr string) {
-	// First, initialise the logger
-	e.log = log.New()
+// Env - applications current environment.  This is quite limited at the
+// moment, exposing the database pool and logger to the rest of the
+// application.
+var Env env
 
+// Init the application's environment.
+// This involves setting up the logger and opening our connection pool to the database.
+func Init(dsn, lvl string) {
+	// Initialise the logger
+	initLog(lvl)
+
+	// Initialise database connection pool
+	initDb(dsn)
+}
+
+func initLog(lvl string) {
+	Env.Log = log.New()
 	// Then convert the string level to a useful logging level
-	level, err := log.ParseLevel(levelStr)
+	level, err := log.ParseLevel(lvl)
 	if err != nil {
 		log.Fatal("Failed to initialise logger: ", err)
 	}
 
-	e.log.SetLevel(level)
+	Env.Log.SetLevel(level)
+}
 
-	e.db, err = sql.Open("sqlite3", url)
+func initDb(dsn string) {
+	var err error
+	Env.Log.WithFields(log.Fields{
+		"db": dsn,
+	}).Debug("Opening database connection pool.")
+
+	Env.DB, err = sql.Open("sqlite3", dsn)
+
 	if err != nil {
-		log.Fatal("Failed to open db connection pool: ", err)
+		Env.Log.Fatal("Failed to open database: ", err)
 	}
 
-	defer e.db.Close()
+	defer Env.DB.Close()
 }
