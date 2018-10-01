@@ -26,12 +26,13 @@ import (
 	"path"
 
 	homedir "github.com/mitchellh/go-homedir"
-	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+
+	"github.com/suburban/flexi-pass/enviro"
 )
 
-var dataDir string
-var logLevel string
+var dir string
+var level string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -59,8 +60,8 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	rootCmd.PersistentFlags().StringVarP(&dataDir, "data-dir", "d", dataDir, "data directory.")
-	rootCmd.PersistentFlags().StringVarP(&logLevel, "log-level", "l", logLevel, "log level.")
+	rootCmd.PersistentFlags().StringVarP(&dir, "dir", "d", dir, "data directory.")
+	rootCmd.PersistentFlags().StringVarP(&level, "level", "l", level, "log level.")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -72,26 +73,10 @@ func initConfig() {
 		os.Exit(1)
 	}
 
-	dataDir = path.Join(home, ".suburban", "flexi-pass")
-	logLevel = "info"
+	dir = path.Join(home, ".suburban", "flexi-pass")
+	level = "info"
 }
 
 func rootPreRun(cmd *cobra.Command, args []string) {
-	log.WithFields(log.Fields{
-		"data-dir":  dataDir,
-		"log-level": logLevel,
-	}).Info("Root Pre Run")
-
-	level, err := log.ParseLevel(logLevel)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.SetLevel(level)
-
-	log.Debug("Debug Message")
-	log.Info("Info Message")
-	log.Warn("Warning Message")
-	log.Error("Error Message")
+	enviro.Init(dir, level)
 }
