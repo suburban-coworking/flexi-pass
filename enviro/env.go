@@ -2,6 +2,9 @@ package enviro
 
 import (
 	"database/sql"
+	"os"
+	"path"
+
 	// blank import 'sqlite3' as we want to rely solely on the 'sql' package's interface
 	_ "github.com/mattn/go-sqlite3"
 
@@ -20,12 +23,15 @@ var Env env
 
 // Init the application's environment.
 // This involves setting up the logger and opening our connection pool to the database.
-func Init(dsn, lvl string) {
+func Init(dir, lvl string) {
 	// Initialise the logger
 	initLog(lvl)
 
+	// Setup application directories.
+	setupAppDir(dir)
+
 	// Initialise database connection pool
-	initDb(dsn)
+	initDb(dir)
 }
 
 func initLog(lvl string) {
@@ -39,17 +45,35 @@ func initLog(lvl string) {
 	Env.Log.SetLevel(level)
 }
 
-func initDb(dsn string) {
-	var err error
+func setupAppDir(dir string) {
+	Env.Log.Debug("Setting up application ...")
+
+	err := os.MkdirAll(dir, os.ModePerm)
+	if err != nil {
+		log.Fatal("Failed to setup application directory.\n", err)
+	}
+
 	Env.Log.WithFields(log.Fields{
-		"db": dsn,
+		"dir": dir,
+	}).Debug("Application directory created.")
+}
+
+func initDb(dir string) {
+	var err error
+
+	dir = path.Join(dir, "su.db")
+
+	Env.Log.WithFields(log.Fields{
+		"db": dir,
 	}).Debug("Opening database connection pool.")
 
-	Env.DB, err = sql.Open("sqlite3", dsn)
+	Env.DB, err = sql.Open("sqlite3", dir)
 
 	if err != nil {
 		Env.Log.Fatal("Failed to open database: ", err)
 	}
 
 	defer Env.DB.Close()
+
+	migrateDB()
 }
