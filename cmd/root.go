@@ -25,6 +25,8 @@ import (
 	"os"
 	"path"
 
+	"github.com/suburban/flexi-pass/enviro"
+
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 )
@@ -33,8 +35,9 @@ var dataDir string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "flexi-pass",
-	Short: "Manage flexi pass usage in a co-working space.",
+	PersistentPreRun: rootPreRun,
+	Use:              "flexi-pass",
+	Short:            "Manage flexi pass usage in a co-working space.",
 	Long: `Flexi Pass is a simple tool to help co-working administrators manage their users
 that have a flexible subscription.  It is a simple command line tool that you can
 use to add users, set subscription periods and see how much of their subscription
@@ -69,4 +72,8 @@ func initConfig() {
 	}
 
 	dataDir = path.Join(home, ".suburban", "flexi-pass")
+}
+
+func rootPreRun(cmd *cobra.Command, args []string) {
+	enviro.Env.Init(dataDir)
 }
