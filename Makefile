@@ -1,22 +1,29 @@
-
-# Go parameters
+# binaries
 GOCMD=go
 PACKRCMD=packr
 DEPCMD=dep
-GOBUILD=$(PACKRCMD) build
-GOCLEAN=$(GOCMD) clean
+
+# packr commands
+PACKRBUILD=$(PACKRCMD) build
 PACKRCLEAN=$(PACKRCMD) clean
+PACKRINSTALL=$(PACKRCMD) install
+
+# Go commamds
+GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
-GOINSTALL=$(PACKRCMD) install
+GOGET=$(GOCMD) get -v -u
+
+# Dep commands
 DEPENSURE=$(DEPCMD) ensure
+
 BINARY_NAME=flexi-pass
 BINARY_PATH=$(shell which $(BINARY_NAME))
 
 all: install test
 build: 
-	$(GOBUILD) -o $(BINARY_NAME) -v
+	$(PACKRBUILD) -o $(BINARY_NAME) -v
 install: build
-	$(GOINSTALL)
+	$(PACKRINSTALL)
 test:
 	$(GOTEST) -v ./...
 clean:
@@ -27,4 +34,7 @@ clean:
 run: install
 	$(BINARY_NAME)
 deps:
+	$(GOGET) github.com/rubenv/sql-migrate/...
+	$(GOGET) github.com/golang/dep/cmd/dep
+	$(GOGET) github.com/gobuffalo/packr/...
 	$(DEPENSURE)
