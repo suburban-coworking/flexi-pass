@@ -20,7 +20,10 @@
 
 package main
 
-import "github.com/suburban/flexi-pass/cmd"
+import (
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/suburban/flexi-pass/cmd"
+)
 
 func main() {
 	cmd.Execute()

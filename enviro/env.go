@@ -3,7 +3,10 @@ package enviro
 import (
 	"database/sql"
 	"os"
+	"path"
 
+	"github.com/gobuffalo/packr"
+	migrate "github.com/rubenv/sql-migrate"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -21,7 +24,10 @@ func (e *env) Init(dir, level string) {
 	e.setupLog(level)
 
 	// Create application directory
-	setupDir(dir)
+	e.setupDir(dir)
+
+	// Initialise database
+	e.initDB(dir)
 }
 
 func (e *env) setupLog(level string) {
@@ -40,17 +46,52 @@ func (e *env) setupLog(level string) {
 	}).Debug("Logger configured.")
 }
 
-func setupDir(dir string) {
+func (e *env) setupDir(dir string) {
 	err := os.MkdirAll(dir, os.ModePerm)
 
 	if err != nil {
-		log.WithFields(log.Fields{
+		e.Log.WithFields(log.Fields{
 			"directory": dir,
-		}).Fatal("Failed to create application directory!", err)
+		}).Fatal("Failed to create application directory: ", err)
 	}
 
-	Env.AppDir = dir
-	log.WithFields(log.Fields{
+	e.AppDir = dir
+	e.Log.WithFields(log.Fields{
 		"directory": Env.AppDir,
 	}).Debug("Setup done.")
+}
+
+func (e *env) initDB(dir string) {
+	var err error
+
+	dir = path.Join(dir, "su.db")
+
+	e.Log.WithFields(log.Fields{
+		"db": dir,
+	}).Debug("Opening database connection pool.")
+
+	e.DB, err = sql.Open("sqlite3", dir)
+
+	if err != nil {
+		e.Log.Fatal("Failed to open database: ", err)
+	}
+
+	defer e.DB.Close()
+
+	e.migrateDB()
+}
+
+func (e *env) migrateDB() {
+	migrations := &migrate.PackrMigrationSource{
+		Box: packr.NewBox("../migrations"),
+	}
+
+	n, err := migrate.Exec(e.DB, "sqlite3", migrations, migrate.Up)
+	if err != nil {
+		e.Log.Fatal("Failed to migrate database: ", err)
+	}
+
+	e.Log.WithFields(log.Fields{
+		"count": n,
+	}).Debug("DB migrations applied.")
 }

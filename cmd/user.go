@@ -15,7 +15,8 @@
 package cmd
 
 import (
-	"fmt"
+	log "github.com/sirupsen/logrus"
+	"github.com/suburban/flexi-pass/enviro"
 
 	"github.com/AlecAivazis/survey"
 	"github.com/spf13/cobra"
@@ -50,17 +51,21 @@ func init() {
 }
 
 func runCommand(cmd *cobra.Command, args []string) {
-	answers := struct {
-		Name  string
-		Email string
-	}{}
+	log.WithFields(log.Fields{
+		"environment": enviro.Env,
+	}).Debug("Environment setup")
 
-	// perform the questions
-	err := survey.Ask(userQuestions, &answers)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
+	// answers := struct {
+	// 	Name  string
+	// 	Email string
+	// }{}
 
-	fmt.Printf("%s, %s.", answers.Name, answers.Email)
+	// // perform the questions
+	// err := survey.Ask(userQuestions, &answers)
+	// if err != nil {
+	// 	fmt.Println(err.Error())
+	// 	return
+	// }
+
+	// fmt.Printf("%s, %s.", answers.Name, answers.Email)
 }

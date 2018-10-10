@@ -1,11 +1,13 @@
 
 # Go parameters
 GOCMD=go
+PACKRCMD=packr
 DEPCMD=dep
-GOBUILD=$(GOCMD) build
+GOBUILD=$(PACKRCMD) build
 GOCLEAN=$(GOCMD) clean
+PACKRCLEAN=$(PACKRCMD) clean
 GOTEST=$(GOCMD) test
-GOINSTALL=$(GOCMD) install
+GOINSTALL=$(PACKRCMD) install
 DEPENSURE=$(DEPCMD) ensure
 BINARY_NAME=flexi-pass
 BINARY_PATH=$(shell which $(BINARY_NAME))
@@ -14,10 +16,11 @@ all: install test
 build: 
 	$(GOBUILD) -o $(BINARY_NAME) -v
 install: build
-	$(GOINSTALL) -v
+	$(GOINSTALL)
 test:
 	$(GOTEST) -v ./...
 clean:
+	$(PACKRCLEAN)
 	$(GOCLEAN)
 	rm -fv $(BINARY_NAME)
 	rm -fv $(BINARY_PATH)

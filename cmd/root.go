@@ -31,7 +31,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var dataDir string
+var dir string
 var level string
 
 // rootCmd represents the base command when called without any subcommands
@@ -60,7 +60,7 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	rootCmd.PersistentFlags().StringVarP(&dataDir, "data-dir", "d", dataDir, "application's data directory.")
+	rootCmd.PersistentFlags().StringVarP(&dir, "dir", "d", dir, "data directory")
 	rootCmd.PersistentFlags().StringVarP(&level, "level", "l", "error", "logging level")
 }
 
@@ -73,9 +73,9 @@ func initConfig() {
 		os.Exit(1)
 	}
 
-	dataDir = path.Join(home, ".suburban", "flexi-pass")
+	dir = path.Join(home, ".suburban", "flexi-pass")
 }
 
 func rootPreRun(cmd *cobra.Command, args []string) {
-	enviro.Env.Init(dataDir, level)
+	enviro.Env.Init(dir, level)
 }
