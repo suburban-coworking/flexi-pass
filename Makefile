@@ -25,7 +25,7 @@ build:
 install: build
 	$(PACKRINSTALL)
 test:
-	$(GOTEST) -v ./...
+	$(GOTEST) -v -cover ./...
 clean:
 	$(PACKRCLEAN)
 	$(GOCLEAN)

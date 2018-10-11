@@ -19,79 +19,84 @@ type env struct {
 // Env gloabl cache of application environment.
 var Env env
 
-func (e *env) Init(dir, level string) {
+func (e *env) Init(dir, level string) error {
+	var err error
+
 	// Initialise logger
-	e.setupLog(level)
-
-	// Create application directory
-	e.setupDir(dir)
-
-	// Initialise database
-	e.initDB(dir)
-}
-
-func (e *env) setupLog(level string) {
-	e.Log = log.New()
-
-	lvl, err := log.ParseLevel(level)
-	if err != nil {
-		e.Log.WithFields(log.Fields{
-			"level": level,
-		}).Fatal("Invalid logging level!")
+	if err = e.setupLog(level); err != nil {
+		return err
 	}
 
+	// Create application directory
+	if err = e.setupDir(dir); err != nil {
+		return err
+	}
+
+	// Initialise database
+	if err = e.initDB(dir); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e *env) setupLog(level string) error {
+	e.Log = log.New()
+	lvl, err := log.ParseLevel(level)
+
+	if err != nil {
+		return err
+	}
 	e.Log.SetLevel(lvl)
+
 	e.Log.WithFields(log.Fields{
 		"level": lvl,
 	}).Debug("Logger configured.")
+	return nil
 }
 
-func (e *env) setupDir(dir string) {
+func (e *env) setupDir(dir string) error {
 	err := os.MkdirAll(dir, os.ModePerm)
 
 	if err != nil {
-		e.Log.WithFields(log.Fields{
-			"directory": dir,
-		}).Fatal("Failed to create application directory: ", err)
+		return err
 	}
-
 	e.AppDir = dir
+
 	e.Log.WithFields(log.Fields{
 		"directory": Env.AppDir,
 	}).Debug("Setup done.")
+	return nil
 }
 
-func (e *env) initDB(dir string) {
+func (e *env) initDB(dir string) error {
 	var err error
 
 	dir = path.Join(dir, "su.db")
-
-	e.Log.WithFields(log.Fields{
-		"db": dir,
-	}).Debug("Opening database connection pool.")
-
 	e.DB, err = sql.Open("sqlite3", dir)
 
 	if err != nil {
-		e.Log.Fatal("Failed to open database: ", err)
+		return err
 	}
-
 	defer e.DB.Close()
 
-	e.migrateDB()
+	e.Log.WithFields(log.Fields{
+		"db": dir,
+	}).Debug("DB pool opened, migrating database.")
+	return e.migrateDB()
 }
 
-func (e *env) migrateDB() {
+func (e *env) migrateDB() error {
 	migrations := &migrate.PackrMigrationSource{
 		Box: packr.NewBox("../migrations"),
 	}
 
 	n, err := migrate.Exec(e.DB, "sqlite3", migrations, migrate.Up)
 	if err != nil {
-		e.Log.Fatal("Failed to migrate database: ", err)
+		return err
 	}
 
 	e.Log.WithFields(log.Fields{
 		"count": n,
 	}).Debug("DB migrations applied.")
+	return nil
 }
